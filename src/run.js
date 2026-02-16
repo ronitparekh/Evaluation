@@ -1,6 +1,6 @@
 import extractPdf from "./extractor/index.js";
 
-const PDF_PATH = "uploads/sample1.pdf";
+const PDF_PATH = "uploads/sample4.pdf";
 
 (async () => {
   console.log(`Processing: ${PDF_PATH}`);

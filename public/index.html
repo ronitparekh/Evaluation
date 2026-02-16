@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Answer Upload</title>
+    <style>
+      :root {
+        --bg: #f4efe6;
+        --panel: #ffffff;
+        --ink: #1f1f1f;
+        --muted: #6b6b6b;
+        --accent: #d6472f;
+        --accent-dark: #b23521;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Georgia", "Times New Roman", serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 20% 10%, #fbe2c8 0, transparent 55%),
+          radial-gradient(circle at 80% 30%, #e7f0ff 0, transparent 50%),
+          var(--bg);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 32px 16px;
+      }
+
+      .card {
+        width: min(720px, 100%);
+        background: var(--panel);
+        border: 2px solid #2b2b2b;
+        box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.15);
+        padding: 28px;
+      }
+
+      h1 {
+        font-size: 28px;
+        margin: 0 0 6px;
+        letter-spacing: 0.5px;
+      }
+
+      p {
+        margin: 0 0 20px;
+        color: var(--muted);
+      }
+
+      form {
+        display: grid;
+        gap: 16px;
+      }
+
+      label {
+        font-weight: 600;
+        margin-bottom: 6px;
+        display: block;
+      }
+
+      input[type="text"],
+      textarea,
+      select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #2b2b2b;
+        font-size: 16px;
+        background: #fffdf8;
+      }
+
+      textarea {
+        min-height: 90px;
+        resize: vertical;
+      }
+
+      .row {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      }
+
+      .actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      button {
+        border: none;
+        padding: 12px 20px;
+        background: var(--accent);
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      button:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2);
+      }
+
+      button:disabled {
+        background: #c9c9c9;
+        cursor: not-allowed;
+      }
+
+      .result {
+        margin-top: 16px;
+        padding: 16px;
+        border: 1px dashed #2b2b2b;
+        background: #fff9ef;
+        font-size: 14px;
+      }
+
+      .result h2 {
+        margin: 0 0 8px;
+        font-size: 18px;
+      }
+
+      .result p {
+        margin: 0 0 12px;
+      }
+
+      .result ul {
+        margin: 0 0 12px 18px;
+        padding: 0;
+      }
+
+      .result li {
+        margin-bottom: 4px;
+      }
+
+      .tag {
+        font-weight: 700;
+      }
+
+      .hint {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .score-panel {
+        display: grid;
+        gap: 12px;
+      }
+
+      .score-section {
+        background: #fff;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+      }
+
+      .score-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+      }
+
+      .value {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1f1f1f;
+      }
+
+      .text-preview {
+        margin-top: 16px;
+        background: #0c0e19;
+        color: #f8fdf7;
+        padding: 14px;
+        border-radius: 10px;
+        max-height: 240px;
+        overflow: auto;
+      }
+
+      .text-preview pre {
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      .diagram-gallery {
+        margin-top: 16px;
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        padding: 14px;
+      }
+
+      .diagram-gallery h3 {
+        margin: 0 0 12px;
+        font-size: 16px;
+      }
+
+      .diagram-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+      }
+
+      .diagram-card {
+        border-radius: 10px;
+        overflow: hidden;
+        background: #0c0e19;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+        padding: 8px;
+      }
+
+      .diagram-card img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 6px;
+      }
+
+      .diagram-card figcaption {
+        margin: 6px 0 0;
+        font-size: 12px;
+        color: #f2f6ff;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <h1>Answer Upload</h1>
+      <p>Upload a PDF, provide the question, and select subject/domain.</p>
+
+      <form id="upload-form">
+        <div>
+          <label for="question">Question</label>
+          <textarea id="question" name="question" placeholder="Type the question"></textarea>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="subject">Subject</label>
+            <input id="subject" name="subject" type="text" placeholder="e.g. History" />
+          </div>
+          <div>
+            <label for="domain">Domain</label>
+            <input id="domain" name="domain" type="text" placeholder="e.g. Modern India" />
+          </div>
+          <div>
+            <label for="maxMarks">Marks</label>
+            <select id="maxMarks" name="maxMarks">
+              <option value="10" selected>10</option>
+              <option value="15">15</option>
+            </select>
+          </div>
+          <div>
+            <label for="provider">Provider</label>
+            <select id="provider" name="provider">
+              <option value="ollama" selected>Ollama</option>
+              <option value="openai">OpenAI</option>
+              <option value="mistral">Mistral + OpenAI pipeline</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label for="pdf">Answer PDF</label>
+          <input id="pdf" name="pdf" type="file" accept="application/pdf" required />
+          <div class="hint">PDF only. Text extraction + evaluation happens after upload.</div>
+        </div>
+
+        <div class="actions">
+          <button type="submit" id="submit-btn">Upload and Evaluate</button>
+        </div>
+      </form>
+
+      <div class="result" id="result">
+        <h2>Waiting for submission…</h2>
+      </div>
+    </main>
+
+    <script>
+      const form = document.getElementById("upload-form");
+      const result = document.getElementById("result");
+      const submitBtn = document.getElementById("submit-btn");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        result.innerHTML = "<h2>Uploading and evaluating…</h2>";
+        submitBtn.disabled = true;
+
+        const formData = new FormData(form);
+
+        try {
+          const provider = (formData.get("provider") || "ollama").toLowerCase();
+          const endpoint =
+            provider === "openai"
+              ? "/upload-openai"
+              : provider === "mistral"
+                ? "/upload-mistral"
+                : "/upload";
+
+          const response = await fetch(endpoint, {
+            method: "POST",
+            body: formData
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            const message = data?.error || "Upload failed";
+            throw new Error(`Upload failed (${response.status}): ${message}`);
+          }
+
+          if (!data || typeof data.evaluation !== "object") {
+            result.innerHTML = "<p>No evaluation data received.</p>";
+            return;
+          }
+
+          const evaluation = data.evaluation;
+          const providerLabel =
+            provider === "openai"
+              ? "OpenAI pipeline"
+              : provider === "mistral"
+                ? "Current Mistral + OpenAI pipeline"
+                : "Local rubric pipeline";
+
+          const scoreboard =
+            provider === "mistral"
+              ? `
+                  <div class="score-section">
+                    <h3>Local Rubric</h3>
+                    ${renderScoreGrid(evaluation.localRubric, evaluation.localRubricError)}
+                  </div>
+                  <div class="score-section">
+                    <h3>OpenAI LLM</h3>
+                    ${renderScoreGrid(evaluation.openaiLLM, evaluation.openaiError)}
+                  </div>
+                `
+              : renderScoreGrid(evaluation);
+
+          result.innerHTML = `
+            <section class="score-panel">
+              <h2>${providerLabel}</h2>
+              ${scoreboard}
+            </section>
+            ${data.text ? `
+              <section class="text-preview">
+                <h3>Extracted Text</h3>
+                <pre>${escapeHtml(data.text)}</pre>
+              </section>
+            ` : ""}
+            ${renderDiagrams(data.diagrams)}
+          `;
+        } catch (error) {
+          result.innerHTML = `<p>Error: ${escapeHtml(error.message)}</p>`;
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+
+      function formatScore(value) {
+        if (value === null || value === undefined || Number.isNaN(Number(value))) {
+          return "N/A";
+        }
+        return Number(value).toFixed(1);
+      }
+
+      function renderScoreGrid(stats, errorMessage) {
+        if (errorMessage) {
+          return `<p class="hint">${escapeHtml(errorMessage)}</p>`;
+        }
+        if (!stats) {
+          return `<p class="hint">Score unavailable.</p>`;
+        }
+
+        const rows = [
+          ["Final Score", "finalScore"],
+          ["Text Score", "TextScore"],
+          ["Visual Score", "VisualScore"],
+          ["Layout Score", "LayoutScore"],
+          ["Confidence", "Confidence"]
+        ];
+
+        return `
+          <div class="score-grid">
+            ${rows
+              .map(
+                ([label, key]) => `
+                  <div>
+                    <div class="tag">${label}</div>
+                    <div class="value">${formatScore(stats[key])} / 10</div>
+                  </div>
+                `
+              )
+              .join("")}
+          </div>
+        `;
+      }
+
+      function renderDiagrams(diagrams) {
+        const filtered = Array.isArray(diagrams)
+          ? diagrams.filter(diagram => diagram && diagram.dataUrl)
+          : [];
+        if (!filtered.length) {
+          return "";
+        }
+
+        return `
+          <section class="diagram-gallery">
+            <h3>Detected Diagrams</h3>
+            <div class="diagram-grid">
+              ${filtered
+                .map(
+                  diagram => `
+                    <figure class="diagram-card">
+                      <img src="${diagram.dataUrl}" alt="${escapeHtml(
+                        diagram.fileName
+                      )}" />
+                      <figcaption>Diagram ${diagram.id} · page ${diagram.pageIndex + 1}</figcaption>
+                    </figure>
+                  `
+                )
+                .join("")}
+            </div>
+          </section>
+        `;
+      }
+
+      function escapeHtml(text) {
+        return String(text)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+    </script>
+  </body>
+</html>

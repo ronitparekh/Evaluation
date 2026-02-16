@@ -1,11 +1,19 @@
-import fs from "fs";
-import { PDFParse } from "pdf-parse";
+import { PDFExtract } from "pdf.js-extract";
 
 export default async function detectPdfType(pdfPath) {
-  const buffer = fs.readFileSync(pdfPath);
-  const data = await new PDFParse(buffer);
+  const pdfExtract = new PDFExtract();
+  const data = await pdfExtract.extract(pdfPath);
 
-  if (data.text && data.text.trim().length > 200) {
+  let textLength = 0;
+  for (const page of data.pages) {
+    for (const content of page.content) {
+      if (content.str) {
+        textLength += content.str.length;
+      }
+    }
+  }
+
+  if (textLength > 200) {
     return "typed";
   }
   return "scanned";

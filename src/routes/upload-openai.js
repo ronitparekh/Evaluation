@@ -2,7 +2,7 @@ import express from "express";
 import multer from "multer";
 import fs from "fs";
 import extractPdf from "../extractor/index.js";
-import { evaluateAnswer } from "../evaluation/index.js";
+import { evaluateAnswerOpenAI } from "../evaluation/index-openai.js";
 
 const router = express.Router();
 const upload = multer({ dest: "uploads/" });
@@ -15,7 +15,7 @@ router.post("/", upload.single("pdf"), async (req, res) => {
 
     const extractedText = await extractPdf(req.file.path);
     const { question, subject, domain, maxMarks } = req.body || {};
-    const evaluation = await evaluateAnswer({
+    const evaluation = await evaluateAnswerOpenAI({
       subject,
       domain,
       question,
@@ -23,10 +23,7 @@ router.post("/", upload.single("pdf"), async (req, res) => {
       maxMarks: maxMarks ? Number(maxMarks) : undefined
     });
 
-    // Optional: delete uploaded file after processing
     fs.unlinkSync(req.file.path);
-
-    console.log("[EVALUATION RAW]", JSON.stringify(evaluation, null, 2));
 
     res.json({
       success: true,

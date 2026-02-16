@@ -4,7 +4,7 @@ import torch
 from PIL import Image, ImageOps, ImageFilter
 from transformers import TrOCRProcessor, VisionEncoderDecoderModel
 
-MODEL_NAME = os.getenv("TROCR_MODEL", "microsoft/trocr-large-handwritten")
+MODEL_NAME = os.getenv("TROCR_MODEL", "microsoft/trocr-base-handwritten")
 
 print(f"Loading TrOCR model: {MODEL_NAME}", file=sys.stderr)
 processor = TrOCRProcessor.from_pretrained(MODEL_NAME)
@@ -33,7 +33,7 @@ def preprocess_image(image_path):
     return image.convert("RGB")
 
 
-def ocr_batch(image_paths, batch_size=4):
+def ocr_batch(image_paths, batch_size=10):
     try:
         if not image_paths:
             return []
@@ -74,7 +74,7 @@ if __name__ == "__main__":
     print(f"Processing {len(image_paths)} images...", file=sys.stderr)
     sys.stderr.flush()
     
-    batch_size = int(os.getenv("TROCR_BATCH_SIZE", "4"))
+    batch_size = int(os.getenv("TROCR_BATCH_SIZE", "10"))
     results = ocr_batch(image_paths, batch_size=batch_size)
     
     for text in results:
